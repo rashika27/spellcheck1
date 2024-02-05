@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import { useState } from "react";
+
+
+const customDictionary = {
+  teh: "the",
+  fot: "for",
+  wrok: "work",
+  exampl: "example",
+   
+
+}
+
+export default function App() {
+  const [text, setText] = useState("");
+  const [suggestedText, setSuggestedText] = useState("");
+  const handleInputChange = (e) => {
+    const inputText = e.target.value;
+    setText(inputText);
+    const words = inputText.split(" ");
+    const correctedWords = words.map((word) => {
+      const correctedWord = customDictionary[word.toLowerCase()];
+      return correctedWord || word;
+    });
+    const correctedText = correctedWords.join(" ");
+  
+    const firstCorrection = correctedWords.find((word, idx) => word !== words[idx]);
+    setSuggestedText(firstCorrection || "");
+  };
+  
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div> 
+      <h1>Spell Check and Auto-Correction</h1>
+      <textarea
+        value={text}
+        onChange={handleInputChange} placeholder= "Enter text..."
+        rows={5}
+        cols={40}/>
+
+        {
+          suggestedText && (
+            <p> Did you mean: <strong>{suggestedText}</strong> </p>
+          )
+        }
     </div>
   );
 }
-
-export default App;
